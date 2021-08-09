@@ -1,44 +1,54 @@
-import React, {useCallback, useEffect, useMemo, useRef} from 'react';
+import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import join from 'lodash/join';
 import values from "lodash/values";
 import {findIndex, has} from "lodash";
 import Winwheel from "./Winwheel";
-import "./AuthenticatedHome.jsx.scss";
+import {Button, Modal} from "react-bootstrap";
 
 const MATCHES = [
-    {'ben': ['caitlin',]},
-    {'caitlin': ['ben',]},
-    {'daragh': ['rich',]},
-    {'gillian': ['jonathan',]},
-    {'jess': ['poppy',]},
-    {'johanna': ['katherine', 'jordan']},
-    {'jonathan': ['gillian',]},
-    {'katherine': ['johanna', 'jordan',]},
-    {'liam': ['marco',]},
-    {'marco': ['liam',]},
-    {'poppy': ['jess',]},
-    {'rich': ['daragh',]},
-    {'dan': ['ali',]},
-    {'ali': ['dan',]},
-    {'jordan': ['poppy', 'johanna',]},
+    {'Ben': ['Caitlin',]},
+    {'Caitlin': ['Ben',]},
+    {'Daragh': ['Rich',]},
+    {'Gillian': ['Jonathan',]},
+    {'Jess': ['Poppy',]},
+    {'Johanna': ['Katherine', 'Jordan']},
+    {'Jonathan': ['Gillian',]},
+    {'Katherine': ['Johanna', 'Jordan',]},
+    {'Liam': ['Marco',]},
+    {'Marco': ['Liam',]},
+    {'Poppy': ['Jess',]},
+    {'Rich': ['Daragh',]},
+    {'Dan': ['Ali',]},
+    {'Ali': ['Dan',]},
+    {'Jordan': ['Poppy', 'Johanna',]},
 ];
 
-const SEGMENTS = MATCHES.map(mapping => {
+const COLOURS = [
+    '#ffff99', '#ffdb99', '#f3c6a5', '#ff9999', '#ffb3bf', '#ff99ff', '#cda5f3', '#9999ff', '#99ff99',
+];
+
+const SEGMENTS = MATCHES.map((mapping, idx) => {
     const names = values(mapping);
-    return {'fillStyle': '#eae56f', 'text': join(names, ', ')};
+    return {'strokeStyle': 'rgba(0,0,0,0)', 'fillStyle': COLOURS[idx % COLOURS.length], 'text': join(names, ', ')};
 });
 
 
 function AuthenticatedHome({name}) {
     const wheel = useRef();
+    const [personMatch, setPersonMatch] = useState(null);
+    const [show, setShow] = useState(false);
+
+    const onSpinFinished = useCallback(() => {
+        setShow(true);
+    }, []);
 
     const drawTriangle = useCallback(() => {
         let tcanvas = document.getElementById('canvas');
         let tx = tcanvas.getContext('2d');
 
         tx.strokeStyle = '#000000';     // Set line colour.
-        tx.fillStyle   = 'aqua';        // Set fill colour.
-        tx.lineWidth   = 1;
+        tx.fillStyle = 'aqua';        // Set fill colour.
+        tx.lineWidth = 1;
         tx.beginPath();                 // Begin path.
         tx.moveTo(410, 0);             // Move to initial position.
         tx.lineTo(470, 0);             // Draw lines to make the shape.
@@ -60,6 +70,7 @@ function AuthenticatedHome({name}) {
                         'duration': 5,
                         'callbackAfter': drawTriangle,
                         'spins': 8,
+                        'callbackFinished': onSpinFinished,
                     },
                 'canvasId': 'canvas',
                 // 'outerRadius' : 155,
@@ -75,6 +86,8 @@ function AuthenticatedHome({name}) {
 
     const onSpin = () => {
         const matchIndex = findIndex(MATCHES, mapping => has(mapping, name));
+        const match = MATCHES[matchIndex];
+        setPersonMatch(values(match).join(' and '));
 
         const angleRange = 360 / MATCHES.length;
         const targetStartAngle = Math.floor(matchIndex * angleRange) + 1;
@@ -93,7 +106,24 @@ function AuthenticatedHome({name}) {
             >Canvas not supported, try another browser.
             </canvas>
         </div>
-        <button onClick={onSpin}>Spin!</button>
+        <Button variant="primary" onClick={onSpin}>Spin!</Button>
+
+        <Modal
+            show={show}
+            onHide={() => setShow(false)}
+            aria-labelledby="example-custom-modal-styling-title"
+        >
+            <Modal.Header closeButton>
+                <Modal.Title id="example-custom-modal-styling-title">
+                    Congratulations!
+                </Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+                <p>
+                    You got {personMatch}!
+                </p>
+            </Modal.Body>
+        </Modal>
     </>);
 }
 

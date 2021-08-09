@@ -1,5 +1,6 @@
 import React, {useState} from 'react';
 import { useHistory } from "react-router-dom";
+import {Button} from "react-bootstrap";
 
 function Landing({setName}) {
 
@@ -16,9 +17,7 @@ function Landing({setName}) {
         <h1>Who is your buddy?</h1>
         <div>Sign in below to find out:</div>
         <input type="text" name="name" id="name" />
-        <button onClick={onSignInClick}>
-            Sign In
-        </button>
+        <Button variant="primary" onClick={onSignInClick}>Sign In</Button>
     </div>
     );
 }
