@@ -13,7 +13,7 @@ export const MATCHES = [
     {'Rich': ['Daragh',]},
     {'Dan': ['Ali',]},
     {'Ali': ['Dan',]},
-    {'Jordan': ['Poppy', 'Johanna',]},
+    {'Jordan': ['Katherine', 'Johanna',]},
 ];
 
 export const IDS = {
