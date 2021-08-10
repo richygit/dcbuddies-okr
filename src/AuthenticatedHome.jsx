@@ -3,25 +3,10 @@ import join from 'lodash/join';
 import values from "lodash/values";
 import {findIndex, has} from "lodash";
 import Winwheel from "./Winwheel";
-import {Button, Modal} from "react-bootstrap";
-
-const MATCHES = [
-    {'Ben': ['Caitlin',]},
-    {'Caitlin': ['Ben',]},
-    {'Daragh': ['Rich',]},
-    {'Gillian': ['Jonathan',]},
-    {'Jess': ['Poppy',]},
-    {'Johanna': ['Katherine', 'Jordan']},
-    {'Jonathan': ['Gillian',]},
-    {'Katherine': ['Johanna', 'Jordan',]},
-    {'Liam': ['Marco',]},
-    {'Marco': ['Liam',]},
-    {'Poppy': ['Jess',]},
-    {'Rich': ['Daragh',]},
-    {'Dan': ['Ali',]},
-    {'Ali': ['Dan',]},
-    {'Jordan': ['Poppy', 'Johanna',]},
-];
+import {Button, Col, Form, Modal, Nav, Row} from "react-bootstrap";
+import {useWindowSize} from "react-use";
+import Confetti from 'react-confetti';
+import {IDS, MATCHES} from "./constants";
 
 const COLOURS = [
     '#ffff99', '#ffdb99', '#f3c6a5', '#ff9999', '#ffb3bf', '#ff99ff', '#cda5f3', '#9999ff', '#99ff99',
@@ -34,13 +19,26 @@ const SEGMENTS = MATCHES.map((mapping, idx) => {
 
 
 function AuthenticatedHome({name}) {
+    const {width, height} = useWindowSize();
     const wheel = useRef();
     const [personMatch, setPersonMatch] = useState(null);
     const [show, setShow] = useState(false);
+    const [showConfetti, setShowConfetti] = useState(false);
+    const [hasSpun, setHasSpun] = useState(false);
+
+    useEffect(() => {
+        setTimeout(() => {
+            window.dispatchEvent(new Event('resize'));
+        }, 10);
+    }, [name]);
 
     const onSpinFinished = useCallback(() => {
+        const matchIndex = findIndex(MATCHES, mapping => has(mapping, name));
+        wheel.current.segments[matchIndex + 1].fillStyle = "red";
+        wheel.current.draw();
         setShow(true);
-    }, []);
+        setShowConfetti(true);
+    }, [wheel, name]);
 
     const drawTriangle = useCallback(() => {
         let tcanvas = document.getElementById('canvas');
@@ -64,6 +62,7 @@ function AuthenticatedHome({name}) {
             {
                 'numSegments': MATCHES.length,
                 'segments': SEGMENTS,
+                'responsive': true,
                 'animation':
                     {
                         'type': 'spinToStop',
@@ -82,12 +81,13 @@ function AuthenticatedHome({name}) {
 
         drawTriangle();
 
-    }, [drawTriangle]);
+    }, [drawTriangle, onSpinFinished]);
 
     const onSpin = () => {
+        setHasSpun(true);
         const matchIndex = findIndex(MATCHES, mapping => has(mapping, name));
         const match = MATCHES[matchIndex];
-        setPersonMatch(values(match).join(' and '));
+        setPersonMatch(values(match)[0]);
 
         const angleRange = 360 / MATCHES.length;
         const targetStartAngle = Math.floor(matchIndex * angleRange) + 1;
@@ -98,33 +98,79 @@ function AuthenticatedHome({name}) {
         wheel.current.startAnimation();
     };
 
-    return (<><h1>Authenticated home, {name}!</h1>
-        <div id="canvasContainer">
-            <canvas id="canvas" width={880} height={440} data-responsiveMinWidth="180"
-                    data-responsiveScaleHeight="true"
-                    data-responsiveMargin="50"
-            >Canvas not supported, try another browser.
-            </canvas>
-        </div>
-        <Button variant="primary" onClick={onSpin}>Spin!</Button>
+    const sendAMessage = useMemo(() => {
+        if (!personMatch) {
+            return;
+        }
+        console.log({personMatch, length: personMatch.length});
+        if (personMatch.length === 1) {
+            const userId = IDS[personMatch[0]];
+            return (
+                <p className="text">How about sending them a <a
+                    href={`slack://user?team=T12PYA736&id=${userId}`}>message</a> now?</p>
+            );
+        }
+        // 2 persons
+        const firstName = personMatch[0];
+        const firstId = IDS[firstName];
+        const secondName = personMatch[1];
+        const secondId = IDS[secondName];
+        return (
+            <p className="text">How about sending{" "}
+                <a href={`slack://user?team=T12PYA736&id=${firstId}`}>{firstName}</a> and{" "}
+                <a href={`slack://user?team=T12PYA736&id=${secondId}`}>{secondName}</a> a message now?
+            </p>
+        );
 
-        <Modal
-            show={show}
-            onHide={() => setShow(false)}
-            aria-labelledby="example-custom-modal-styling-title"
-        >
-            <Modal.Header closeButton>
-                <Modal.Title id="example-custom-modal-styling-title">
-                    Congratulations!
-                </Modal.Title>
-            </Modal.Header>
-            <Modal.Body>
-                <p>
-                    You got {personMatch}!
-                </p>
-            </Modal.Body>
-        </Modal>
-    </>);
+
+    }, [personMatch]);
+
+    return (
+        <>
+            <Row style={{marginTop: 20}}>
+                <Col lg>
+                    <h1>Welcome, {name}!</h1>
+                    <div style={{marginBottom: 20}} className="text">Ready to spin the wheel?</div>
+                    <div id="canvasContainer">
+                        <canvas id="canvas" width={880} height={440} data-responsiveminwidth="180"
+                                data-responsivescaleheight="true"
+                                data-responsivemargin="20"
+                        >Canvas not supported, try another browser.
+                        </canvas>
+                    </div>
+                    <Form style={{marginTop: 20}}>
+                        <Button disabled={hasSpun} variant="primary" onClick={onSpin}>Spin!</Button>
+                    </Form>
+                    <Modal
+                        show={show}
+                        onHide={() => setShow(false)}
+                        aria-labelledby="example-custom-modal-styling-title"
+                    >
+                        <Modal.Header closeButton>
+                            <Modal.Title id="example-custom-modal-styling-title">
+                                Congratulations
+                            </Modal.Title>
+                        </Modal.Header>
+                        <Modal.Body style={{fontSize: "1.1rem"}}>
+                            {personMatch && (
+                                <>
+                                    <p className="text">
+                                        You got: <strong>{join(personMatch, ' and ')}</strong>!
+                                    </p>
+                                    {sendAMessage}
+                                </>
+                            )}
+                        </Modal.Body>
+                    </Modal>
+                    {showConfetti && (
+                        <Confetti
+                            width={width}
+                            height={height}
+                        />
+                    )}
+                </Col>
+            </Row>
+        </>);
 }
 
 export default AuthenticatedHome;

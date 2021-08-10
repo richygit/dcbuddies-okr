@@ -2337,6 +2337,7 @@ function winwheelResize()
 
     // OK so now we have the percent, set the scaleFactor of the wheel to this.
     winwheelToDrawDuringAnimation.scaleFactor = percent;
+    console.log({percent, minWidth, minHeight});
 
     // Now re-draw the wheel to ensure the changes in size are rendered.
     winwheelToDrawDuringAnimation.draw();
