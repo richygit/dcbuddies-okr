@@ -3,7 +3,7 @@ import join from 'lodash/join';
 import values from "lodash/values";
 import {findIndex, has} from "lodash";
 import Winwheel from "./Winwheel";
-import {Button, Col, Form, Modal, Nav, Row} from "react-bootstrap";
+import {Accordion, Button, Col, Form, Modal, Nav, Row} from "react-bootstrap";
 import {useWindowSize} from "react-use";
 import Confetti from 'react-confetti';
 import {IDS, MATCHES} from "./constants";
@@ -154,10 +154,44 @@ function AuthenticatedHome({name}) {
                         <Modal.Body style={{fontSize: "1.1rem"}}>
                             {personMatch && (
                                 <>
-                                    <p className="text">
-                                        You got: <strong>{join(personMatch, ' and ')}</strong>!
+                                    <p className="text" style={{marginBottom: 30}}>
+                                        You got: <span style={{fontWeight: "bold", fontSize: "1.3rem"}}>{join(personMatch, ' and ')}</span>!
                                     </p>
-                                    {sendAMessage}
+                                    <div>
+                                        <Accordion>
+                                            <Accordion.Item eventKey="0">
+                                                <Accordion.Header>What do I have to do?</Accordion.Header>
+                                                <Accordion.Body>
+                                                    You don't <span style={{textDecoration: "underline"}}>have to</span> do anything. This is completely
+                                                    voluntary and it's up to you and your buddy to decide how much you
+                                                    want to make this work.
+                                                </Accordion.Body>
+                                            </Accordion.Item>
+                                            <Accordion.Item eventKey="1">
+                                                <Accordion.Header>What do you recommend I do?</Accordion.Header>
+                                                <Accordion.Body>
+                                                    <div style={{textAlign: "left"}}>
+                                                    <ul>
+                                                        <li>Talk to your buddy.</li>
+                                                        <li>
+                                                            Take on the responsibility of checking in with your buddy
+                                                            and holding them accountable to doing the same for you. This
+                                                            is only useful if you both get something out of it.
+                                                        </li>
+                                                        <li>Listen. Just listen.
+                                                        </li>
+                                                    </ul>
+                                                    </div>
+                                                </Accordion.Body>
+                                            </Accordion.Item>
+                                            <Accordion.Item eventKey="2">
+                                                <Accordion.Header><strong>Next Steps</strong></Accordion.Header>
+                                                <Accordion.Body>
+                                                    {sendAMessage}
+                                                </Accordion.Body>
+                                            </Accordion.Item>
+                                        </Accordion>
+                                    </div>
                                 </>
                             )}
                         </Modal.Body>
