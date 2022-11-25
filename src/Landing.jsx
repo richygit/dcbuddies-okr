@@ -23,7 +23,7 @@ function Landing({setName, setEmail}) {
                 <Col lg>
                     <div className="App">
                         <h1>Looking for a buddy?</h1>
-                        <video src={video} width="480" autoPlay playsInline>
+                        <video src={video} width="480" autoPlay playsInline controls>
                             Sorry, your browser doesn't support embedded videos.
                         </video>
                         <div className="text" style={{marginBottom: 20}}>Tell us who you are to get started.</div>
