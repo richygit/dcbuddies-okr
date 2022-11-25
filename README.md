@@ -3,7 +3,7 @@ yarn predeploy
 
 # Deploy to github pages
 
-yarn deploy
+npx gh-pages -d build
 
 # Getting Started with Create React App
 
