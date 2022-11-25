@@ -3,7 +3,7 @@ import {useHistory} from "react-router-dom";
 import {Col, Dropdown, Row} from "react-bootstrap";
 import {MATCHES} from "./constants";
 import {keys} from "lodash";
-import video from "./images/buddies.webm";
+import buddies from "./images/buddies.gif";
 
 
 const NAMES = MATCHES.map(mapping => keys(mapping)[0]);
@@ -23,9 +23,7 @@ function Landing({setName, setEmail}) {
                 <Col lg>
                     <div className="App">
                         <h1>Looking for a buddy?</h1>
-                        <video src={video} width="480" autoPlay playsInline controls>
-                            Sorry, your browser doesn't support embedded videos.
-                        </video>
+                        <img src={buddies} alt="some buddies" width="480" height="100%" />
                         <div className="text" style={{marginBottom: 20}}>Tell us who you are to get started.</div>
                         <Dropdown style={{marginBottom: 30}}>
                             <Dropdown.Toggle variant="success" id="dropdown-basic">
