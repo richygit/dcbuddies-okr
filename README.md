@@ -1,8 +1,10 @@
 # Build for gh pages
-yarn deploy
+yarn predeploy
 
 # Deploy to github pages
-npm run deploy
+
+yarn deploy
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
