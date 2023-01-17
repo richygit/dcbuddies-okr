@@ -1,14 +1,13 @@
 export const MATCHES = [
-    {'Ben': ['Jordan',]},
-    {'Caitlin': ['James',]},
+    {'Ben': ['Dan',]},
     {'CQ': ['Daragh',]},
-    {'Dan': ['Rich',]},
+    {'Dan': ['Ben',]},
     {'Daragh': ['CQ',]},
-    {'James': ['Caitlin',]},
-    {'Jess': ['Johanna',]},
-    {'Jordan': ['Ben']},
-    {'Johanna': ['Jess']},
-    {'Rich': ['Dan',]},
+    {'James': ['Johanna', 'Jordan']},
+    {'Jess': ['Rich',]},
+    {'Jordan': ['James', 'Johanna']},
+    {'Johanna': ['James', 'Jordan']},
+    {'Rich': ['Jess',]},
 ];
 
 export const IDS = {
