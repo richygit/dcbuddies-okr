@@ -1,8 +1,8 @@
 {
   "files": {
     "main.css": "/dcbuddies-okr/static/css/main.61dcb271.chunk.css",
-    "main.js": "/dcbuddies-okr/static/js/main.168fada2.chunk.js",
-    "main.js.map": "/dcbuddies-okr/static/js/main.168fada2.chunk.js.map",
+    "main.js": "/dcbuddies-okr/static/js/main.7d6e90b5.chunk.js",
+    "main.js.map": "/dcbuddies-okr/static/js/main.7d6e90b5.chunk.js.map",
     "runtime-main.js": "/dcbuddies-okr/static/js/runtime-main.3a94502a.js",
     "runtime-main.js.map": "/dcbuddies-okr/static/js/runtime-main.3a94502a.js.map",
     "static/css/2.3ab4f688.chunk.css": "/dcbuddies-okr/static/css/2.3ab4f688.chunk.css",
@@ -21,6 +21,6 @@
     "static/css/2.3ab4f688.chunk.css",
     "static/js/2.00cc83ed.chunk.js",
     "static/css/main.61dcb271.chunk.css",
-    "static/js/main.168fada2.chunk.js"
+    "static/js/main.7d6e90b5.chunk.js"
   ]
 }
